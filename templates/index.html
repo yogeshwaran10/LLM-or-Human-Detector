@@ -1,102 +1,390 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text Classification</title>
+    <title>LLM or Human Detector</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
+        /* Custom Animations */
+        @keyframes wave {
+            0% { transform: rotate(0deg); }
+            20% { transform: rotate(-15deg); }
+            40% { transform: rotate(15deg); }
+            60% { transform: rotate(-15deg); }
+            80% { transform: rotate(15deg); }
+            100% { transform: rotate(0deg); }
         }
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+         /* Centered modal animation */
+         @keyframes slideIn {
+            0% { transform: translateY(-50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
         }
-        h1 {
-            color: #333;
-            text-align: center;
+
+        /* Primary Headings */
+        h1, .hero-text {
+            font-family: 'Playfair Display', serif;
         }
-        textarea {
-            width: 100%;
-            height: 200px;
-            margin: 10px 0;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            resize: vertical;
+
+        /* Navigation and Logo */
+        nav, .logo {
+            font-family: 'DM Sans', sans-serif;
         }
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            display: block;
-            margin: 20px auto;
+
+        /* Secondary Headings */
+        h2, h3, h4 {
+            font-family: 'Inter', sans-serif;
         }
-        button:hover {
-            background-color: #0056b3;
+
+        /* Body Text */
+        body, p, textarea {
+            font-family: 'Source Sans Pro', sans-serif;
         }
+
+        /* Buttons and Special Elements */
+        button, .special-text {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Modal Content */
+        .modal-container {
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+        
+        /* Results Section */
         #result {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 4px;
-            text-align: center;
-            display: none;
+            font-family: 'Inter', sans-serif;
         }
-        .error {
-            background-color: #ffe6e6;
-            color: #d63031;
+
+        /* Statistics (word count, etc.) */
+        .stats {
+            font-family: 'DM Sans', sans-serif;
         }
-        .success {
-            background-color: #e6ffe6;
-            color: #27ae60;
+        /* Button animations */
+        .button-animate {
+            transition: background-color 0.3s ease;
         }
-        .loading {
-            display: none;
-            text-align: center;
-            margin: 20px 0;
+
+        .button-animate:hover {
+            background-color: #e74c3c;
+        }
+        /* Fade animations */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.5s ease-in forwards;
+        }
+         /* Modernize scrollbar */
+         textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        textarea::-webkit-scrollbar-thumb {
+            background-color: rgba(100, 100, 100, 0.5);
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        textarea::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(100, 100, 100, 0.8);
+        }
+
+        textarea::-webkit-scrollbar-track {
+            background: rgba(200, 200, 200, 0.1);
+        }
+        .animate-wave {
+            animation: wave 2s infinite;
+        }
+
+        /* Hover Underline Animation */
+        .hover-underline-animation {
+            position: relative;
+            text-decoration: none;
+        }
+        body {
+            position: relative; /* Establish stacking context */
+        }
+
+        /* Add z-index to the form to prevent overlap issues */
+        form {
+            position: relative;
+            z-index: 1; /* This ensures the form content stays below the modal */
+        }
+        /* Modal styling */
+        #popup {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+            transform: scale(0.9);
+            z-index: -1; /* Ensuring it's above other elements */
+            overflow-y: auto; /* Allow scrolling when content overflows */
+        }
+
+        /* Modal container */
+        .modal-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 600px; /* Increased width to accommodate more content */
+            width: 100%;
+            animation: slideIn 0.5s ease-out forwards;
+            z-index: 10000; /* Ensuring the modal content stays above the backdrop */
+            max-height: 90%; /* Limit the height of the modal */
+            overflow-y: auto; /* Enable vertical scrolling if content exceeds height */
+            box-sizing: border-box; /* Ensures padding doesn't increase the container size */
+        }
+
+        /* Modal header */
+        .modal-container h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #4A4A4A;
+            margin-bottom: 1rem;
+        }
+
+        /* Modal paragraph */
+        .modal-container p {
+            font-size: 1rem;
+            color: #4A4A4A;
+            margin-bottom: 1rem;
+        }
+
+        /* Modal list */
+        .modal-container ul {
+            margin-left: 1.5rem;
+            font-size: 1rem;
+            color: #4A4A4A;
+        }
+
+        /* Modal button */
+        #closePopup {
+            background-color: #DC2626;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        #closePopup:hover {
+            background-color: #B91C1C;
+        }
+
+        /* Slide-in animation */
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hover-underline-animation::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #FF7043;
+            transform-origin: bottom right;
+            transition: transform 0.3s ease-out;
+        }
+
+        .hover-underline-animation:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        /* Loading Spinner Animation */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+       
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Text Classification</h1>
-        <form id="classificationForm">
-            <textarea id="inputText" placeholder="Enter your text here..." required></textarea>
-            <button type="submit">Classify Text</button>
-        </form>
-        <div id="loading" class="loading">Processing...</div>
-        <div id="result"></div>
+<body class="bg-gray-50">
+    <!-- Navbar -->
+    <nav class="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 flex justify-between items-center">
+        <div class="text-2xl font-bold text-white">
+            <span class="text-blue-300">LLM</span>
+            <span class="text-orange-400">Detector</span>
+        </div>
+        <button id="noteButton" class="bg-orange-400 hover:bg-orange-500 text-white px-4 py-2 rounded-lg transition-all duration-300 relative">
+            <span class="hover-underline-animation">Note</span>
+        </button>
+    </nav>
+
+    <!-- Popup Modal -->
+    <div id="popup" class="hidden">
+        <div class="modal-container">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Note</h3>
+            <p class="text-gray-700 mb-4">This project utilizes models trained on a student essay dataset, specifically designed to identify and classify human-written versus machine-generated text within the academic domain. It is important to note that the model's performance may not be consistent across all domains. While it is optimized for academic writing, its ability to reliably predict LLM-generated text in other fields or specialized subjects may be limited. 📚📝</p>
+            <p class="text-gray-700 mb-4">This is an experimental project, and the results generated by these models are not final or universally applicable. Performance may vary depending on the complexity of the input data. 🔬</p>
+            <p class="text-gray-700 mb-4">
+                <strong>Key Considerations:</strong>
+            </p>
+            <ul class="text-gray-700 mb-4 list-disc pl-5">
+                <li><strong>Domain-Specific Accuracy:</strong> The models are constrained to the academic context and may exhibit decreased accuracy when applied to texts from other domains. The results should be interpreted with caution when dealing with non-academic content. ⚖️</li>
+                <li><strong>Experimental Nature:</strong> This is an experimental project and the results generated by these models are not final or universally applicable. Performance may vary depending on the complexity of the input data. 🔬</li>
+                <li><strong>Input Validation:</strong> Users are advised to cross-check their inputs to ensure accurate analysis. While the models are designed to detect patterns and characteristics of LLM-generated text, results may not always be definitive. ✅🔍</li>
+                <li><strong>Limitations:</strong> The models are trained on a specific dataset, and like all machine learning models, they have inherent limitations, especially when dealing with unseen or out-of-scope data. 🚧</li>
+                <li><strong>Continuous Improvement:</strong> We are committed to continuously refining and updating this project. Feedback is welcomed to help enhance the model's accuracy and applicability to a wider range of domains. 🚀</li>
+            </ul>
+            <p class="text-gray-700 mb-4">Please ensure you understand the experimental nature of this project and use it accordingly. ⚙️</p>
+            <button id="closePopup" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                Close
+            </button>
+        </div>
+    </div>
+    
+
+    <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto">
+            <!-- Main Container with animation -->
+            <div class="bg-white rounded-lg shadow-xl overflow-hidden animate__animated animate__fadeIn">
+                <!-- Gradient Header -->
+                <div class="px-6 py-8 text-center bg-gradient-to-r from-blue-600 to-indigo-600">
+                    <h1 class="text-3xl font-bold text-white mb-2 animate__animated animate__fadeInDown">
+                        LLM or Human Detector
+                    </h1>
+                    <p class="text-blue-100 animate__animated animate__fadeInUp animate__delay-1s">
+                        Analyze text to determine if it was written by a human or an AI
+                    </p>
+                </div>
+
+                <!-- Form Section -->
+                <form id="classificationForm" class="p-6">
+                    <div class="mb-6">
+                        <!-- Text Stats -->
+                        <div class="flex justify-between text-sm text-gray-500 mb-2">
+                            <span id="wordCount">Words: 0</span>
+                            <span id="charCount">Characters: 0</span>
+                        </div>
+                        
+                        <!-- Textarea with animation -->
+                        <textarea 
+                            id="inputText" 
+                            class="w-full h-48 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-all duration-200"
+                            placeholder="Enter your text here..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button 
+                        type="submit"
+                        class="w-full py-3 px-6 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors duration-200 relative"
+                    >
+                        <span id="buttonText">Analyze Text</span>
+                        <div id="loadingSpinner" class="hidden absolute inset-0 flex items-center justify-center">
+                            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </div>
+                    </button>
+                </form>
+
+                <!-- "Star us" Note -->
+                <div class="p-6 text-center">
+                    <a href="https://github.com/yogeshwaran10/LLM-or-Human-Detector" target="_blank" class="flex justify-center items-center text-lg font-semibold text-blue-600 hover:text-blue-700">
+                        <span class="hover-underline-animation">Star us - It helps us</span>
+                        <svg class="w-6 h-6 ml-2 animate-wave" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Results Section -->
+                <div id="result" class="hidden p-6 border-t border-gray-100">
+                    <!-- Content will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
+        // Word and character counter
+        const textarea = document.getElementById('inputText');
+        const wordCount = document.getElementById('wordCount');
+        const charCount = document.getElementById('charCount');
+
+        textarea.addEventListener('input', () => {
+            const text = textarea.value;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            const chars = text.length;
+            
+            wordCount.textContent = `Words: ${words}`;
+            charCount.textContent = `Characters: ${chars}`;
+        });
+
+        // Popup Modal handling
+        const noteButton = document.getElementById('noteButton');
+        const popup = document.getElementById('popup');
+        const closePopup = document.getElementById('closePopup');
+
+        noteButton.addEventListener('click', () => {
+            popup.classList.remove('hidden');
+            popup.classList.add('flex');
+            document.body.style.overflow = 'hidden';  // Disable scrolling
+            setTimeout(() => {
+                popup.style.opacity = 1;
+                popup.style.zIndex = 9999;
+                popup.style.transform = 'scale(1)';
+            }, 100);
+        });
+
+        closePopup.addEventListener('click', () => {
+            popup.style.opacity = 0;
+            popup.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                popup.classList.remove('flex');
+                popup.classList.add('hidden');
+                popup.style.zIndex = -1; // Ensure modal doesn't block interaction
+            }, 300);
+        });
+
+        // Form submission handling
         document.getElementById('classificationForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const text = document.getElementById('inputText').value.trim();
+            const text = textarea.value.trim();
+            const button = e.target.querySelector('button');
+            const buttonText = document.getElementById('buttonText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
             const resultDiv = document.getElementById('result');
-            const loadingDiv = document.getElementById('loading');
             
             if (!text) {
-                resultDiv.innerHTML = 'Please enter some text to classify';
-                resultDiv.className = 'error';
-                resultDiv.style.display = 'block';
+                showResult('Please enter some text to classify', true);
                 return;
             }
             
+            // Start loading state
+            button.disabled = true;
+            buttonText.classList.add('opacity-0');
+            loadingSpinner.classList.remove('hidden');
+            
             try {
-                resultDiv.style.display = 'none';
-                loadingDiv.style.display = 'block';
-                
                 const response = await fetch('/classify', {
                     method: 'POST',
                     headers: {
@@ -108,20 +396,46 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    resultDiv.innerHTML = `Classification Result: ${data.prediction}<br>Confidence: ${data.confidence}`;
-                    resultDiv.className = 'success';
+                    showResult(`
+                        <div class="animate__animated animate__fadeIn">
+                            <div class="flex items-center justify-center mb-4">
+                                <svg class="text-green-500 w-8 h-8 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <h3 class="text-xl font-semibold text-gray-800">${data.prediction}</h3>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-sm text-gray-600">Confidence</div>
+                                <div class="mt-1 text-2xl font-bold text-blue-600">${data.confidence}</div>
+                            </div>
+                        </div>
+                    `);
                 } else {
-                    resultDiv.innerHTML = data.error || 'An error occurred';
-                    resultDiv.className = 'error';
+                    showResult(data.error || 'An error occurred', true);
                 }
             } catch (error) {
-                resultDiv.innerHTML = 'An error occurred while processing your request';
-                resultDiv.className = 'error';
+                showResult('An error occurred while processing your request', true);
             } finally {
-                loadingDiv.style.display = 'none';
-                resultDiv.style.display = 'block';
+                // Reset loading state
+                button.disabled = false;
+                buttonText.classList.remove('opacity-0');
+                loadingSpinner.classList.add('hidden');
             }
         });
+
+        function showResult(content, isError = false) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = `p-6 border-t border-gray-100 ${isError ? 'bg-red-50' : 'bg-green-50'} fade-in`;
+            resultDiv.innerHTML = isError ? `
+                <div class="flex items-center text-red-600">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 6L6 18M6 6l12 12"></path>
+                    </svg>
+                    ${content}
+                </div>
+            ` : content;
+            resultDiv.classList.remove('hidden');
+        }
     </script>
 </body>
 </html>

@@ -4,6 +4,7 @@ from transformers import RobertaTokenizer, RobertaModel
 import spacy
 from collections import Counter
 import textstat
+from tqdm import tqdm  # For progress visualization
 from lexical_diversity import lex_div as ld
 from entity_grid import get_entity_transitions
 

@@ -1,9 +1,14 @@
 import torch
 import numpy as np
+import os
+import logging
 from flask import Flask, render_template, request, jsonify
 from embedding_generation import get_embedding  # Assuming this is your embedding generation script
 import traceback
 import torch.nn as nn
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
 
 # Define the CombinedModel class (as it was defined in your training script)
 class CombinedModel(nn.Module):
@@ -74,7 +79,6 @@ def classify_text():
             'confidence': f"{probabilities[predicted_class] * 100:.2f}%"  # Confidence in percentage
         }
 
-
         return jsonify(result)
 
     except Exception as e:
@@ -88,19 +92,26 @@ if __name__ == '__main__':
         # Initialize the model with the correct input dimension
         model = CombinedModel(input_dim=797)  # Replace 797 with the actual input dimension from your training
 
-        # Load the saved state_dict into the model instance
-        if torch.cuda.is_available():
-            device = torch.device("cuda") 
-            print(device)
+        # Check if the model file exists
+        if not os.path.exists('best_model_combination.pth'):
+            print("Model file not found.")
+            model = None
         else:
-            device = torch.device("cpu")
-            print(device)
+            # Load the saved state_dict into the model instance
+            if torch.cuda.is_available():
+                device = torch.device("cuda") 
+                print(device)
+            else:
+                device = torch.device("cpu")
+                print(device)
 
-        model.load_state_dict(torch.load('best_model_combination.pth', map_location=device))
-        model.eval()  # Set the model to evaluation mode
-        print("Model loaded successfully")
+            model.load_state_dict(torch.load('best_model_combination.pth', map_location=device))
+            model.eval()  # Set the model to evaluation mode
+            print("Model loaded successfully")
     except Exception as e:
         print(f"Error loading model: {e}")
         model = None
 
-    app.run(debug=True)
+    # Run the Flask app
+    port = int(os.getenv("PORT", 5000))  # Render will provide the port
+    app.run(debug=True, host='0.0.0.0', port=port)
