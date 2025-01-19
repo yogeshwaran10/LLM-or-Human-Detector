@@ -4,114 +4,137 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LLM or Human Detector</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='artificial-intelligence (1).gif') }}?v=1">
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&family=SF+Pro+Text:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    
+
     <style>
-        /* Custom Animations */
-        @keyframes wave {
-            0% { transform: rotate(0deg); }
-            20% { transform: rotate(-15deg); }
-            40% { transform: rotate(15deg); }
-            60% { transform: rotate(-15deg); }
-            80% { transform: rotate(15deg); }
-            100% { transform: rotate(0deg); }
+        /* Base Styles */
+        body {
+            font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
         }
-         /* Centered modal animation */
-         @keyframes slideIn {
-            0% { transform: translateY(-50px); opacity: 0; }
+
+        /* Typography */
+        h1, h2, h3, .hero-text {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        /* Apple-style Animations */
+        @keyframes floatIn {
+            0% { transform: translateY(20px); opacity: 0; }
             100% { transform: translateY(0); opacity: 1; }
         }
 
-        /* Primary Headings */
-        h1, .hero-text {
-            font-family: 'Playfair Display', serif;
+        @keyframes scaleIn {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
-        /* Navigation and Logo */
-        nav, .logo {
-            font-family: 'DM Sans', sans-serif;
+        @keyframes glowPulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 122, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 122, 255, 0); }
         }
 
-        /* Secondary Headings */
-        h2, h3, h4 {
-            font-family: 'Inter', sans-serif;
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        /* Body Text */
-        body, p, textarea {
-            font-family: 'Source Sans Pro', sans-serif;
+        @keyframes subtleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
         }
 
-        /* Buttons and Special Elements */
-        button, .special-text {
-            font-family: 'Montserrat', sans-serif;
+        /* Component Styles */
+        .apple-nav {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            transition: all 0.3s ease;
         }
 
-        /* Modal Content */
-        .modal-container {
-            font-family: 'Source Sans Pro', sans-serif;
+        .apple-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .apple-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .apple-button {
+            background: linear-gradient(135deg, #007AFF, #0055FF);
+            background-size: 200% 200%;
+            animation: gradientShift 5s ease infinite;
+            transition: all 0.3s ease;
+        }
+
+        .apple-button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(0, 122, 255, 0.4);
+        }
+
+        .apple-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            color: white;
         }
         
-        /* Results Section */
+        .apple-input:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #007AFF;
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2);
+        }
+
+        .float-animation {
+            animation: subtleFloat 3s ease-in-out infinite;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #fff 0%, #a5a5a5 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .parallax-container {
+            perspective: 1000px;
+            transform-style: preserve-3d;
+        }
+
+        .parallax-element {
+            transform: translateZ(50px);
+            transition: transform 0.3s ease-out;
+        }
+        /* Result section styling */
         #result {
-            font-family: 'Inter', sans-serif;
-        }
-
-        /* Statistics (word count, etc.) */
-        .stats {
-            font-family: 'DM Sans', sans-serif;
-        }
-        /* Button animations */
-        .button-animate {
-            transition: background-color 0.3s ease;
-        }
-
-        .button-animate:hover {
-            background-color: #e74c3c;
-        }
-        /* Fade animations */
-        .fade-in {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             opacity: 0;
-            animation: fadeIn 0.5s ease-in forwards;
-        }
-         /* Modernize scrollbar */
-         textarea::-webkit-scrollbar {
-            width: 8px;
+            transform: translateY(20px);
         }
 
-        textarea::-webkit-scrollbar-thumb {
-            background-color: rgba(100, 100, 100, 0.5);
-            border-radius: 10px;
-            transition: background-color 0.3s ease;
+        #result.show {
+            opacity: 1;
+            transform: translateY(0);
         }
-
-        textarea::-webkit-scrollbar-thumb:hover {
-            background-color: rgba(100, 100, 100, 0.8);
-        }
-
-        textarea::-webkit-scrollbar-track {
-            background: rgba(200, 200, 200, 0.1);
-        }
-        .animate-wave {
-            animation: wave 2s infinite;
-        }
-
-        /* Hover Underline Animation */
-        .hover-underline-animation {
-            position: relative;
-            text-decoration: none;
-        }
-        body {
-            position: relative; /* Establish stacking context */
-        }
-
-        /* Add z-index to the form to prevent overlap issues */
-        form {
-            position: relative;
-            z-index: 1; /* This ensures the form content stays below the modal */
-        }
-        /* Modal styling */
+        /* Modal container */
         #popup {
             display: flex;
             justify-content: center;
@@ -122,182 +145,77 @@
             transition: opacity 0.3s ease, transform 0.3s ease;
             opacity: 0;
             transform: scale(0.9);
-            z-index: -1; /* Ensuring it's above other elements */
-            overflow-y: auto; /* Allow scrolling when content overflows */
+            z-index: -1; /* Hidden by default */
+            overflow-y: auto; /* Confine scrolling to modal content */
         }
 
-        /* Modal container */
-        .modal-container {
-            background-color: white;
+        /* Modal content */
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 2rem;
             border-radius: 10px;
-            max-width: 600px; /* Increased width to accommodate more content */
+            max-width: 1000px;
             width: 100%;
-            animation: slideIn 0.5s ease-out forwards;
-            z-index: 10000; /* Ensuring the modal content stays above the backdrop */
-            max-height: 90%; /* Limit the height of the modal */
-            overflow-y: auto; /* Enable vertical scrolling if content exceeds height */
-            box-sizing: border-box; /* Ensures padding doesn't increase the container size */
+            overflow-y: auto; /* Ensure content can scroll within the modal */
+            max-height: 90vh; /* Restrict height of modal content */
         }
 
-        /* Modal header */
-        .modal-container h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #4A4A4A;
-            margin-bottom: 1rem;
+        /* For body when modal is active */
+        body.modal-open {
+            overflow: hidden; /* Prevent website scrolling */
         }
 
-        /* Modal paragraph */
-        .modal-container p {
-            font-size: 1rem;
-            color: #4A4A4A;
-            margin-bottom: 1rem;
-        }
-
-        /* Modal list */
-        .modal-container ul {
-            margin-left: 1.5rem;
-            font-size: 1rem;
-            color: #4A4A4A;
-        }
-
-        /* Modal button */
-        #closePopup {
-            background-color: #DC2626;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-        }
-
-        #closePopup:hover {
-            background-color: #B91C1C;
-        }
-
-        /* Slide-in animation */
-        @keyframes slideIn {
-            0% {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .hover-underline-animation::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            transform: scaleX(0);
-            height: 2px;
-            bottom: -2px;
-            left: 0;
-            background-color: #FF7043;
-            transform-origin: bottom right;
-            transition: transform 0.3s ease-out;
-        }
-
-        .hover-underline-animation:hover::after {
-            transform: scaleX(1);
-            transform-origin: bottom left;
-        }
-
-        /* Loading Spinner Animation */
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .animate-spin {
-            animation: spin 1s linear infinite;
-        }
-       
-
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
+        
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-black">
     <!-- Navbar -->
-    <nav class="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 flex justify-between items-center">
-        <div class="text-2xl font-bold text-white">
-            <span class="text-blue-300">LLM</span>
-            <span class="text-orange-400">Detector</span>
-        </div>
-        <button id="noteButton" class="bg-orange-400 hover:bg-orange-500 text-white px-4 py-2 rounded-lg transition-all duration-300 relative">
-            <span class="hover-underline-animation">Note</span>
-        </button>
-    </nav>
-
-    <!-- Popup Modal -->
-    <div id="popup" class="hidden">
-        <div class="modal-container">
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">Note</h3>
-            <p class="text-gray-700 mb-4">This project utilizes models trained on a student essay dataset, specifically designed to identify and classify human-written versus machine-generated text within the academic domain. It is important to note that the model's performance may not be consistent across all domains. While it is optimized for academic writing, its ability to reliably predict LLM-generated text in other fields or specialized subjects may be limited. 📚📝</p>
-            <p class="text-gray-700 mb-4">This is an experimental project, and the results generated by these models are not final or universally applicable. Performance may vary depending on the complexity of the input data. 🔬</p>
-            <p class="text-gray-700 mb-4">
-                <strong>Key Considerations:</strong>
-            </p>
-            <ul class="text-gray-700 mb-4 list-disc pl-5">
-                <li><strong>Domain-Specific Accuracy:</strong> The models are constrained to the academic context and may exhibit decreased accuracy when applied to texts from other domains. The results should be interpreted with caution when dealing with non-academic content. ⚖️</li>
-                <li><strong>Experimental Nature:</strong> This is an experimental project and the results generated by these models are not final or universally applicable. Performance may vary depending on the complexity of the input data. 🔬</li>
-                <li><strong>Input Validation:</strong> Users are advised to cross-check their inputs to ensure accurate analysis. While the models are designed to detect patterns and characteristics of LLM-generated text, results may not always be definitive. ✅🔍</li>
-                <li><strong>Limitations:</strong> The models are trained on a specific dataset, and like all machine learning models, they have inherent limitations, especially when dealing with unseen or out-of-scope data. 🚧</li>
-                <li><strong>Continuous Improvement:</strong> We are committed to continuously refining and updating this project. Feedback is welcomed to help enhance the model's accuracy and applicability to a wider range of domains. 🚀</li>
-            </ul>
-            <p class="text-gray-700 mb-4">Please ensure you understand the experimental nature of this project and use it accordingly. ⚙️</p>
-            <button id="closePopup" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
-                Close
+    <nav class="apple-nav fixed w-full z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="text-2xl font-bold tracking-tight float-animation">
+                <span class="bg-gradient-to-r from-blue-400 to-indigo-500 text-transparent bg-clip-text">LLM Detector</span>
+            </div>
+            <button id="noteButton" class="apple-button px-6 py-2 rounded-full text-white text-sm font-medium">
+                About
             </button>
         </div>
-    </div>
-    
+    </nav>
 
-    <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-3xl mx-auto">
-            <!-- Main Container with animation -->
-            <div class="bg-white rounded-lg shadow-xl overflow-hidden animate__animated animate__fadeIn">
-                <!-- Gradient Header -->
-                <div class="px-6 py-8 text-center bg-gradient-to-r from-blue-600 to-indigo-600">
-                    <h1 class="text-3xl font-bold text-white mb-2 animate__animated animate__fadeInDown">
-                        LLM or Human Detector
+    <!-- Hero Section -->
+    <div class="min-h-screen pt-24 px-6">
+        <div class="max-w-4xl mx-auto parallax-container">
+            <div class="apple-card rounded-3xl overflow-hidden p-8 parallax-element" style="animation: scaleIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);">
+                <div class="text-center mb-12" style="animation: floatIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);">
+                    <h1 class="text-6xl font-bold mb-6 gradient-text">
+                        LLM or Human?
                     </h1>
-                    <p class="text-blue-100 animate__animated animate__fadeInUp animate__delay-1s">
-                        Analyze text to determine if it was written by a human or an AI
+                    <p class="text-xl text-gray-400">
+                        AI writes, but we detect – it’s that simple! 🤖🔍
                     </p>
                 </div>
 
-                <!-- Form Section -->
-                <form id="classificationForm" class="p-6">
-                    <div class="mb-6">
-                        <!-- Text Stats -->
-                        <div class="flex justify-between text-sm text-gray-500 mb-2">
-                            <span id="wordCount">Words: 0</span>
-                            <span id="charCount">Characters: 0</span>
-                        </div>
-                        
-                        <!-- Textarea with animation -->
+                <!-- Input Section -->
+                <form id="classificationForm" class="space-y-6">
+                    <div class="relative">
                         <textarea 
-                            id="inputText" 
-                            class="w-full h-48 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-all duration-200"
-                            placeholder="Enter your text here..."
+                            id="inputText"
+                            class="apple-input w-full h-48 rounded-xl p-6 text-lg resize-none"
+                            placeholder="Enter your text for analysis..."
                             required
                         ></textarea>
+                        <div class="flex justify-between text-sm text-gray-500 mt-2 px-2">
+                            <span id="wordCount" class="text-gray-400">Words: 0</span>
+                            <span id="charCount" class="text-gray-400">Characters: 0</span>
+                        </div>
                     </div>
-
-                    <!-- Submit Button -->
-                    <button 
-                        type="submit"
-                        class="w-full py-3 px-6 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors duration-200 relative"
-                    >
-                        <span id="buttonText">Analyze Text</span>
-                        <div id="loadingSpinner" class="hidden absolute inset-0 flex items-center justify-center">
-                            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    
+                    <button type="submit" class="apple-button w-full py-4 rounded-xl text-white font-medium relative overflow-hidden">
+                        <span id="buttonText">Predict</span>
+                        <div id="loadingSpinner" class="hidden absolute inset-0 flex items-center justify-center bg-inherit">
+                            <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
@@ -305,26 +223,138 @@
                     </button>
                 </form>
 
-                <!-- "Star us" Note -->
-                <div class="p-6 text-center">
-                    <a href="https://github.com/yogeshwaran10/LLM-or-Human-Detector" target="_blank" class="flex justify-center items-center text-lg font-semibold text-blue-600 hover:text-blue-700">
-                        <span class="hover-underline-animation">Star us - It helps us</span>
-                        <svg class="w-6 h-6 ml-2 animate-wave" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                        </svg>
-                    </a>
-                </div>
-
                 <!-- Results Section -->
-                <div id="result" class="hidden p-6 border-t border-gray-100">
-                    <!-- Content will be dynamically inserted here -->
+                <div id="result" class="hidden mt-8">
+                    <!-- Dynamic content will be inserted here -->
                 </div>
             </div>
         </div>
     </div>
+    <!-- Modal -->
+    <div id="popup" class="hidden fixed inset-0 z-50">
+        <div class="modal-backdrop absolute inset-0 transition-opacity duration-300">
+            <div class="modal-content max-w-2xl mx-auto mt-20 rounded-2xl p-8 text-white">
+                <h3 class="text-2xl font-semibold mb-6 gradient-text">About LLM Detector</h3>
+                <div class="space-y-4 text-gray-300">
+                    <p>This project utilizes models trained on a student essay dataset, specifically designed to identify and classify human-written versus LLM-generated text within the academic domain.</p>
+
+                    <div class="space-y-4 mt-6">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-6 w-6 text-blue-400">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <p class="ml-3">Domain-specific accuracy optimized for academic writing</p>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-6 w-6 text-blue-400">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <p class="ml-3">Experimental project with continuous improvements</p>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-6 w-6 text-blue-400">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <p class="ml-3">This is an experimental project and the results generated by these models are not final or universally applicable. Performance may vary depending on the complexity of the input data. 🔬</p>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-6 w-6 text-blue-400">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <p class="ml-3"><strong>Key Considerations:</strong></p>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-6 w-6 text-blue-400">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <p class="ml-3"><strong>Domain-Specific Accuracy:</strong> The models are constrained to the academic context and may exhibit decreased accuracy when applied to texts from other domains. The results should be interpreted with caution when dealing with non-academic content. ⚖️</p>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-6 w-6 text-blue-400">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <p class="ml-3"><strong>Input Validation:</strong> Users are advised to cross-check their inputs to ensure accurate analysis. While the models are designed to detect patterns and characteristics of LLM-generated text, results may not always be definitive. ✅🔍</p>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-6 w-6 text-blue-400">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <p class="ml-3"><strong>Limitations:</strong> The models are trained on a specific dataset, they have inherent limitations, especially when dealing with unseen or out-of-scope data. 🚧</p>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-6 w-6 text-blue-400">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <p class="ml-3"><strong>Continuous Improvement:</strong> We are committed to continuously refining and updating this project. Feedback is welcomed to help enhance the model's accuracy and applicability to a wider range of domains. 🚀</p>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-6 w-6 text-blue-400">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <p class="ml-3">Please ensure you understand the experimental nature of this project and use it accordingly. ⚙️</p>
+                        </div>
+                    </div>
+                </div>
+                <button id="closePopup" class="mt-8 w-full apple-button py-3 rounded-xl font-medium">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-16 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-around items-center gap-8">
+                <!-- Documentation Section -->
+                <a href="https://github.com/yogeshwaran10/LLM-or-Human-Detector" class="text-lg font-semibold gradient-text hover:text-blue-400 transition-colors duration-200 flex items-center space-x-2">
+                    <i class="fas fa-book"></i>
+                    <span>Documentation</span>
+                </a>
+    
+                <!-- GitHub Section -->
+                <a href="https://github.com/yogeshwaran10" class="text-lg font-semibold gradient-text hover:text-blue-400 transition-colors duration-200 flex items-center space-x-2">
+                    <i class="fab fa-github"></i>
+                    <span>GitHub</span>
+                </a>
+    
+                <!-- Contact Section -->
+                <a href="https://www.linkedin.com/in/yogeshravichandran/" class="text-lg font-semibold gradient-text hover:text-blue-400 transition-colors duration-200 flex items-center space-x-2">
+                    <i class="fab fa-linkedin"></i>
+                    <span>Contact</span>
+                </a>
+            </div>
+        </div>
+        </div>
+            <div class="mt-12 pt-8 border-t border-gray-800 text-center">
+                <p class="text-gray-400">&copy; 2025 LLM Detector. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 
     <script>
-        // Word and character counter
+        // Word and character counter with smooth animation
         const textarea = document.getElementById('inputText');
         const wordCount = document.getElementById('wordCount');
         const charCount = document.getElementById('charCount');
@@ -338,15 +368,16 @@
             charCount.textContent = `Characters: ${chars}`;
         });
 
-        // Popup Modal handling
+        // Modal handling with smooth transitions
         const noteButton = document.getElementById('noteButton');
         const popup = document.getElementById('popup');
         const closePopup = document.getElementById('closePopup');
+        const modalContent = popup.querySelector('.modal-content');
 
         noteButton.addEventListener('click', () => {
             popup.classList.remove('hidden');
             popup.classList.add('flex');
-            document.body.style.overflow = 'hidden';  // Disable scrolling
+            document.body.style.overflow = 'hidden'; // Disable scrolling on the website
             setTimeout(() => {
                 popup.style.opacity = 1;
                 popup.style.zIndex = 9999;
@@ -361,10 +392,61 @@
                 popup.classList.remove('flex');
                 popup.classList.add('hidden');
                 popup.style.zIndex = -1; // Ensure modal doesn't block interaction
+                document.body.style.overflow = ''; // Re-enable scrolling on the website
             }, 300);
         });
 
-        // Form submission handling
+        // Optional: Close modal on clicking outside the content
+        popup.addEventListener('click', (e) => {
+            if (e.target === popup) {
+                popup.style.opacity = 0;
+                popup.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    popup.classList.remove('flex');
+                    popup.classList.add('hidden');
+                    popup.style.zIndex = -1;
+                    document.body.style.overflow = ''; // Re-enable scrolling
+                }, 300);
+            }
+        });
+
+
+        // Parallax effect with subtle and smooth motion
+        // Parallax effect with subtle and smooth static motion (Fixed rotation effect)
+        document.addEventListener('mousemove', (e) => {
+            const parallaxContainer = document.querySelector('.parallax-container');
+            const parallaxElement = document.querySelector('.parallax-element');
+            
+            if (parallaxContainer && parallaxElement) {
+                // Get container's position and size
+                const containerRect = parallaxContainer.getBoundingClientRect();
+                const centerX = containerRect.left + containerRect.width / 2;
+                const centerY = containerRect.top + containerRect.height / 2;
+                
+                const mouseX = e.clientX - centerX;
+                const mouseY = e.clientY - centerY;
+                
+                // Adjust movement to a more subtle static effect (limit the rotation)
+                const moveX = (mouseX / centerX) * 2; // Reduced multiplier for even subtler movement
+                const moveY = (mouseY / centerY) * 2; // Reduced multiplier for even subtler movement
+                
+                // Apply subtle rotation but limit the angle to avoid excessive spinning
+                parallaxElement.style.transform = `translateZ(50px) rotateX(${-Math.min(Math.max(moveY, -15), 15)}deg) rotateY(${Math.min(Math.max(moveX, -15), 15)}deg)`;
+            }
+        });
+
+        // Reset parallax on mouse leave with smooth transition
+        document.addEventListener('mouseleave', () => {
+            const parallaxElement = document.querySelector('.parallax-element');
+            if (parallaxElement) {
+                parallaxElement.style.transition = 'transform 0.3s ease-out'; // Smooth transition on reset
+                parallaxElement.style.transform = 'translateZ(50px) rotateX(0deg) rotateY(0deg)';
+            }
+        });
+
+
+
+        // Form submission with enhanced loading state
         document.getElementById('classificationForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -379,9 +461,9 @@
                 return;
             }
             
-            // Start loading state
-            button.disabled = true;
-            buttonText.classList.add('opacity-0');
+            // Enhanced loading state
+            button.classList.add('opacity-75');
+            buttonText.style.opacity = '0';
             loadingSpinner.classList.remove('hidden');
             
             try {
@@ -398,15 +480,17 @@
                 if (response.ok) {
                     showResult(`
                         <div class="animate__animated animate__fadeIn">
-                            <div class="flex items-center justify-center mb-4">
-                                <svg class="text-green-500 w-8 h-8 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                <h3 class="text-xl font-semibold text-gray-800">${data.prediction}</h3>
+                            <div class="flex items-center justify-center mb-6">
+                                <div class="bg-blue-400/10 rounded-full p-3">
+                                    <svg class="text-blue-400 w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-2xl font-semibold text-white ml-3">${data.prediction}</h3>
                             </div>
-                            <div class="text-center">
-                                <div class="text-sm text-gray-600">Confidence</div>
-                                <div class="mt-1 text-2xl font-bold text-blue-600">${data.confidence}</div>
+                            <div class="text-center bg-white/5 backdrop-blur-lg rounded-xl p-6">
+                                <div class="text-sm font-medium text-gray-400 mb-2">Confidence Level</div>
+                                <div class="text-3xl font-bold text-blue-400">${data.confidence}</div>
                             </div>
                         </div>
                     `);
@@ -416,25 +500,29 @@
             } catch (error) {
                 showResult('An error occurred while processing your request', true);
             } finally {
-                // Reset loading state
-                button.disabled = false;
-                buttonText.classList.remove('opacity-0');
+                button.classList.remove('opacity-75');
+                buttonText.style.opacity = '1';
                 loadingSpinner.classList.add('hidden');
             }
         });
 
         function showResult(content, isError = false) {
             const resultDiv = document.getElementById('result');
-            resultDiv.className = `p-6 border-t border-gray-100 ${isError ? 'bg-red-50' : 'bg-green-50'} fade-in`;
+            resultDiv.className = `mt-8 ${isError ? 'bg-red-500/10' : 'bg-white/5'} backdrop-blur-lg rounded-xl p-6 transform transition-all duration-300`;
             resultDiv.innerHTML = isError ? `
-                <div class="flex items-center text-red-600">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 6L6 18M6 6l12 12"></path>
+                <div class="flex items-center text-red-400">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     ${content}
                 </div>
             ` : content;
+            
             resultDiv.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                resultDiv.style.opacity = '1';
+                resultDiv.style.transform = 'translateY(0)';
+            });
         }
     </script>
 </body>
